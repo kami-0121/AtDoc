@@ -122,7 +122,7 @@ AST 優先（AST-First）。Parser 只負責做純粹的語義與數據提取，
 
 基於上述規範 AST，後端渲染器（Renderers）可啟動物理分流轉譯：
 
-### 🛣️ 路線 A：Tailwind JIT 適配器（高效 Web 端）
+### 路線 A：Tailwind JIT 適配器（高效 Web 端）
 
 後端適配器遍歷 `styles` 物件，自動幫動態值「補殼還原」，完美觸發 Tailwind CSS 的 JIT 編譯：
 
@@ -136,7 +136,7 @@ AST 優先（AST-First）。Parser 只負責做純粹的語義與數據提取，
 
 
 
-### 🛣️ 路線 B：Universal Inline Style 適配器（跨平台/無封裝環境）
+### 路線 B：Universal Inline Style 適配器（跨平台/無封裝環境）
 
 當遇到老舊前端、Email 渲染、或原生 Native App 視圖時，動態值直接翻譯成標準的 CSS 行內鍵值對：
 
