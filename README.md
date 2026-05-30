@@ -1,178 +1,185 @@
-# @Doc (M@rkdown)
+# @Doc — AI-Native Semantic Document Notation
 
-> Markdown reimagined with @semantic nodes for humans and AI.
+<img src="https://github.com/kami-0121/AtDoc/blob/index/atd.png" width="64"/>
 
-
-
-M@rkdown is an AI-native structured markdown language designed for:
-
-Human readability
-
-Deterministic parsing
-
-AST-first architecture
-
-Token efficiency
-
-Streaming-safe rendering
-
-Semantic document structures
-
-
-Unlike traditional Markdown, M@rkdown introduces fixed semantic slots using @nodes.
-
+**@Doc is not Markdown.**  
+It's a structured notation designed from the ground up for three audiences: humans who write content, AI that generates it, and compilers that render it.
 
 ---
 
-Example
-
-Basic Markdown
-
-# Hello World
-
-This is normal markdown.
-
-M@rkdown
-
-@card(featured){w:full}[
-  @title[AI Native Language]
-  @text[
-    Structured markdown with deterministic grammar.
-  ]
-  @btn(primary)[Get Started](install)
-]
-
+**@Doc 不是 Markdown。**  
+它是一種從零構建的結構化標記語言，專為三種使用者設計：撰寫內容的人類、生成內容的 AI，以及渲染它的編譯器。
 
 ---
 
-Core Grammar
+## Why @Doc? / 為什麼選擇 @Doc？
 
-@node(modifier){style}[content](action)
+**Markdown** was designed for humans to write, and for a single output: HTML. It has no concept of semantic intent, no structure for AI to reason about, and no way to compile to multiple targets without ambiguity.
 
-Slot	Meaning
-
-@node	Semantic node type
-()	Behavior / modifier
-{}	Style / metadata
-[]	Content
-() tail	Action / reference
-
-
+**@Doc** separates structure from presentation. The same source file compiles cleanly to Tailwind JIT HTML, inline-style HTML, or any future render target — without changing a single character of the source.
 
 ---
 
-Design Philosophy
+**Markdown** 是為人類書寫而設計的，且只有一個輸出目標：HTML。它沒有語義意圖的概念，沒有供 AI 推理的結構，也無法在不產生歧義的情況下編譯到多個目標。
 
-1. Deterministic Grammar
-
-Fixed grammar slots make parsing stable and predictable.
-
+**@Doc** 將結構與展示分離。同一份原始文件可以乾淨地編譯為 Tailwind JIT HTML、行內樣式 HTML，或任何未來的渲染目標——原始碼一字不改。
 
 ---
 
-2. Human Readable Compression
+## Core Syntax / 核心語法
 
-Compact syntax without becoming cryptic.
+Every node follows the same structure:
 
+```
+@node(modifier){styles}[content](action)
+```
+
+每個節點遵循相同的結構：
+
+| Slot / 槽位 | Role / 角色 | Example / 範例 |
+|---|---|---|
+| `@node` | Node type / 節點類型 | `@btn`, `@h1`, `@card` |
+| `(modifier)` | Variant or attribute / 變體或屬性 | `(primary)`, `(ja)` |
+| `{styles}` | Visual styles or metadata / 樣式或元數據 | `{w-300px bg-fff}` |
+| `[content]` | Content slot — **globally unique** / 內容槽位——**全域唯一** | `[Submit]` |
+| `(action)` | Trailing trigger / 尾綴動作 | `(submit)`, `(install)` |
+
+`[]` has one meaning everywhere in @Doc: **content**. No escaping hell.
+
+`[]` 在 @Doc 中只有一個含義：**內容**。徹底告別字元逃逸地獄。
 
 ---
 
-3. AI-Native Structure
+## Example / 語法範例
 
-Designed for:
-
-LLM generation
-
-Semantic parsing
-
-AST mapping
-
-Streaming rendering
-
-Structured editing
-
-
-
----
-
-4. AST-First
-
-Every syntax structure maps cleanly into a canonical AST.
-
-Example:
-
-@btn(primary){#000}[Confirm](submit)
-
-↓
-
-{
-  "type": "button",
-  "modifier": ["primary"],
-  "style": {
-    "color": "#000"
-  },
-  "content": "Confirm",
-  "action": "submit"
+```
+@seo {
+  "title": "@Doc 2026 Spec",
+  "description": "AI-native semantic document runtime"
 }
 
+@h1[@Doc 專案規範]
+
+這是普通段落，其中包含行內語義節點：這是 @lang(ja)[日本語] 的展現。
+
+@card(featured){w-300px bg-f8f9fa text-sm}[
+  @title[AI 原生語言]
+  @text[具有確定性語法的結構化標記語言，專為雙向 AST 設計。]
+  @btn(primary)[立即開始](install)
+]
+
+@table[
+  @cols[id,name,price]
+  @data[
+    [1,早餐,60]
+    [2,午餐,80]
+    [3,晚餐,90]
+  ]
+]
+```
 
 ---
 
-Why M@rkdown?
+## Dual-Track Compilation / 雙線並行編譯
 
-Traditional Markdown was designed for:
+The same AST compiles to two output tracks without touching the source:
 
-Human → HTML
+同一份 AST 可編譯為兩種輸出，無需修改原始碼：
 
-M@rkdown is designed for:
+**Route A — Tailwind JIT**
+```html
+<button class="text-lg w-[120px] bg-[#fff]">Submit</button>
+```
 
-Human ↔ AI ↔ AST ↔ Renderer
+**Route B — Universal Inline Style**
+```html
+<button class="text-lg" style="width: 120px; background-color: #fff;">Submit</button>
+```
 
+Dynamic values are stored in the AST as structured data (`{ prop: "w", value: "120px" }`), not raw strings. The adapter decides how to render them.
 
----
-
-Goals
-
-Markdown compatibility
-
-Semantic document structures
-
-Deterministic parsing
-
-AI-friendly tokenization
-
-Lossless AST conversion
-
-Incremental parsing support
-
-Streaming-safe rendering
-
-
+動態值在 AST 中以結構化資料儲存（`{ prop: "w", value: "120px" }`），而非原始字串。由後端適配器決定如何渲染。
 
 ---
 
-Status
+## Node Taxonomy / 節點分類
 
-Early experimental design phase.
+### Core Nodes / 結構原件
+The immutable skeleton of any document.
 
-Currently focusing on:
+文件骨架，不可再分割的原子。
 
-Grammar design
+`@h1` `@h2` `@h3` `@p` `@quote` `@code` `@list` `@img` `@link` `@table`
 
-AST specification
+### Semantic Nodes / 語義容器
+Two modes:
 
-Parser architecture
+兩種行為模式：
 
-Token optimization
-
-Streaming parsing
-
-AI-native document workflows
-
-
+- **Inline Semantic** — renders as a tagged inline element: `@lang(ja)[日本語]`
+- **Block Metadata** — injects config into the host, renders no HTML: `@seo{...}`
 
 ---
 
-License
+## For AI Developers / 給 AI 開發人員
+
+Generating HTML directly from LLMs is brittle. Hallucinated tags, unclosed elements, and inconsistent class names are hard to catch downstream.
+
+直接讓 LLM 生成 HTML 很脆弱。幻覺標籤、未閉合元素、不一致的 class 名稱都難以在下游捕捉。
+
+@Doc gives the model a constrained, deterministic grammar to generate into. Errors surface at parse time, not render time. And because `[]` is the only bracket with content semantics, the model doesn't need to reason about bracket collision.
+
+@Doc 為模型提供一套受約束的確定性語法。錯誤在解析時暴露，而非渲染時。因為 `[]` 是唯一具備內容語義的括號，模型無需推理括號衝突問題。
+
+Token cost is also lower: `w-300px` instead of Tailwind's arbitrary value syntax `w-[300px]` — the bracket is restored by the compiler, not generated by the model.
+
+Token 成本也更低：使用 `w-300px` 而非 Tailwind 的任意值語法 `w-[300px]`——括號由編譯器補回，而非由模型生成。
+
+---
+
+## For Web Developers / 給網站開發人員
+
+Drop the parser and adapters into your pipeline. Feed it @Doc source, get structured AST out, render with whichever adapter fits your stack.
+
+將 Parser 和 Adapters 加入你的 pipeline。輸入 @Doc 原始碼，輸出結構化 AST，用符合你技術棧的適配器渲染。
+
+```ts
+import { tokenize } from './Lexer';
+import { DocParser } from './Parser';
+import { DocTranspiler } from './Adapters';
+
+const tokens = tokenize(source);
+const ast = new DocParser(tokens).parse();
+const html = ast.map(node => DocTranspiler.toTailwindHTML(node)).join('\n');
+```
+
+---
+
+## Design Boundaries / 設計邊界
+
+@Doc is intentionally **not** a programming language.
+
+@Doc 刻意**不是**程式語言。
+
+- No variables / 無變數
+- No conditionals / 無條件判斷
+- No loops / 無迴圈
+- No macros / 無巨集系統
+
+Logic lives in the host application. @Doc owns structure, not behavior.
+
+邏輯由 Host 應用負責。@Doc 只負責結構，不負責行為。
+
+---
+
+## Status / 現狀
+
+Early development. Parser, Lexer, and dual-track Adapters are functional. Playground and CLI coming.
+
+早期開發階段。Parser、Lexer 與雙線適配器已可運作。Playground 與 CLI 即將推出。
+
+---
+
+## License / 授權
 
 MIT
