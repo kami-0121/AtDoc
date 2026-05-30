@@ -62,11 +62,11 @@ AST 優先（AST-First）。Parser 只負責做純粹的語義與數據提取，
 
 ```@Doc
 @seo {
-  "title": "M@rkdown 2026 Spec",
+  "title": "@Doc 2026 Spec",
   "description": "AI-native semantic document runtime"
 }
 
-@h1[M@rkdown 專案規範]
+@h1[@Doc 專案規範]
 
 這是普通段落，其中包含行內語義節點：這是 @lang(ja)[日本語] 的展現。
 
@@ -76,6 +76,16 @@ AST 優先（AST-First）。Parser 只負責做純粹的語義與數據提取，
     具有確定性語法的結構化 Markdown，專為雙向 AST 設計。
   ]
   @btn(primary)[立即開始](install)
+]
+
+@table[
+  @cols[id,name,price]
+
+  @data[
+    [1,早餐,60]
+    [2,午餐,80]
+    [3,晚餐,90]
+  ]
 ]
 
 ```
