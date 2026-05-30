@@ -1,96 +1,118 @@
-# @Doc (原為 M@rkdown)
+# @Doc (AI-Native Semantic Document Notation)
 
-> 專為人類與 AI 重新構思的語義節點式 Markdown。
+> 專為人類、AI 與編譯器重新構思的「雙線並行」語義節點式 Markdown。
 
-@Doc 是一種 AI 原生的結構化標記語言，旨在實現：
-
-* **人類可讀性**
-* **確定性解析**（Deterministic parsing）
-* **AST 優先架構**（AST-first architecture）
-* **Token 效率**（節省生成成本）
-* **串流安全渲染**（Streaming-safe rendering）
-* **語義化文件結構**
-
-與傳統 Markdown 不同，@Doc 引入了使用 `@nodes` 的固定**語義槽位（Semantic Slots）**。
+@Doc 是一種 AI 原生的結構化標記語言，旨在通過極度克制的語法槽位，在保持 Markdown 流暢度的同時，為大語言模型（LLM）與前端渲染器提供確定性、低成本、串流安全的雙向溝通橋樑。
 
 ---
 
-## 範例
+## 核心設計理念與痛點防禦
 
-### 基礎 Markdown
+1. **確定性語法與符號唯一性 (Deterministic Grammar)**
+固定語法槽位，且**方括號 `[]` 擁有全域絕對唯一的語義：內容槽位（Content Slot）**。徹底杜絕字元逃逸地獄（Escaping Hell）。
+2. **高階語義與結構權重隔離 (Ontology Separation)**
+拒絕 JSX 式的「組件叢林」混亂。文檔骨架由不可分割的 `Core Nodes` 守護，高階組件由 `Semantic Nodes` 封裝，語義角色則作為內部局部槽位（Slots）。
+3. **AI 生成 Token 壓縮 (Token Efficiency)**
+全面移除冗餘的語法殼（如 Tailwind 的任意值方括號），讓 AI 在流式生成（Streaming）時預測概率最優化，大幅節省大模型的生成成本與解析混亂。
+4. **雙線並行轉譯 (Dual-Track Compilation)**
+AST 優先（AST-First）。Parser 只負責做純粹的語義與數據提取，將視覺轉譯權交由後端適配器，同時完美相容 Tailwind JIT 與標準 Inline Style。
 
-```markdown
-# Hello World
-這是普通的 Markdown。
+---
+
+## 節點架構分類 (Node Taxonomy)
+
+@Doc 的核心節點分為兩大陣營，各自遵循嚴格的解析邊界：
+
+### 1. 結構原件 (Core Nodes)
+
+永遠只負責文檔的基礎骨架與數字層級，是不可再分割的原子。
+
+* `布局 / 文本`：`@h1`, `@h2`, `@h3`, `@p`, `@quote`, `@code`
+* `數據 / 媒體`：`@list`, `@img`, `@link`
+
+### 2. 語義容器與配置 (Semantic Nodes)
+
+提供高階上下文語義，內部分化為兩種行為模式：
+
+* **行內語義 (Inline Semantic)**：如 `@lang(ja)[日本語]`，轉譯為具備精準語境的行內標籤。
+* **區塊元數據 (Block Metadata)**：如 `@seo{...}`，不渲染任何視覺 HTML，直接將配置注入 Host 應用或編譯目標。
+
+---
+
+## 核心語法
+
+```@Doc
+@node(修飾符){樣式/元數據}[內容](動作)
 
 ```
 
-### @Doc (M@rkdown)
+| 槽位 (Slot) | 語義規則 | 實踐規範 |
+| --- | --- | --- |
+| **`@node`** | 語義節點類型 | 必須為官方標準庫或 Schema 宣告之合規節點。 |
+| **`()`** | 行為 / 修飾符 | 定義節點的變體（如 `primary`, `featured`, 或語言代碼 `zh-tw`）。 |
+| **`{}`** | 樣式 / 元數據 | 1. **區塊元數據**：內建標準 JSON / JSON5 / YAML 子集（如 `@seo`）。<br>
+
+<br>2. **視覺樣式**：擁抱微型 Tailwind，**嚴禁使用方括號 `-[...]**`。數值一律改用連字號直接串接（如 `w-300px`）。 |
+| **`[]`** | 內容槽位 | 唯一的內文邊界。若節點單獨佔據一行且上下有空行，解譯為 Block；前後有文字，則強制解譯為 Inline。 |
+| **`()` 尾綴** | 動作 / 引用 | 行為觸發器（如 `submit`, `install`）或遠端數據參照。 |
+
+---
+
+## 語法範例
+
+### 基礎與高階語義混排文檔
 
 ```@Doc
-@card(featured){w:full}[
+@seo {
+  "title": "M@rkdown 2026 Spec",
+  "description": "AI-native semantic document runtime"
+}
+
+@h1[M@rkdown 專案規範]
+
+這是普通段落，其中包含行內語義節點：這是 @lang(ja)[日本語] 的展現。
+
+@card(featured){w-300px bg-f8f9fa text-sm}[
   @title[AI 原生語言]
   @text[
-    具有確定性語法的結構化 Markdown。
+    具有確定性語法的結構化 Markdown，專為雙向 AST 設計。
   ]
   @btn(primary)[立即開始](install)
 ]
 
 ```
 
----
-
-## 核心語法
-
-`@node(修飾符){樣式}[內容](動作)`
-
-| 槽位 (Slot) | 意義 |
-| --- | --- |
-| **@node** | 語義節點類型 |
-| **()** | 行為 / 修飾符 (Modifier) |
-| **{}** | 樣式 / 元數據 (Metadata) |
-| **[]** | 內容 |
-| **() 尾綴** | 動作 / 引用 (Action / Reference) |
+> **注意：** `@title` 與 `@text` 在此處並非 Root 層級的獨立節點，而是 `@card` 容器內部合法的**局部語義槽位（Slots）**，成功規避了語義層級塌陷風險。
 
 ---
 
-## 設計理念
+## 規範化 AST 優先映射 (Canonical AST)
 
-### 1. 確定性語法 (Deterministic Grammar)
+每個語法結構都能無損、清晰地映射到規範的抽象語法樹。在解析 `{style}` 時，Parser 會自動將樣式分類為靜態類名（Static）與自定義動態屬性（Dynamic）。
 
-固定的語法槽位使解析過程穩定且可預測。
+**範例輸入：**
 
-### 2. 人類可讀的壓縮
+```@Doc
+@btn(primary){text-lg w-120px bg-fff}[確認](submit)
 
-保持語法精簡，同時不失可讀性。
+```
 
-### 3. AI 原生結構
-
-專為以下需求設計：
-
-* LLM 生成
-* 語義解析
-* AST 映射
-* 串流渲染
-* 結構化編輯
-
-### 4. AST 優先 (AST-First)
-
-每個語法結構都能清晰地映射到規範的 AST（抽象語法樹）。
-
-**範例：**
-`@btn(primary){#000}[確認](submit)`
-
-**↓ 轉換為 ↓**
+**↓ Parser 輸出之規範 AST ↓**
 
 ```json
 {
   "type": "button",
   "modifier": ["primary"],
-  "style": {
-    "color": "#000"
+  "attributes": {
+    "styles": {
+      "static": ["text-lg"],
+      "dynamic": [
+        { "prop": "w", "value": "120px" },
+        { "prop": "bg", "value": "fff" }
+      ]
+    }
   },
-  "content": "確認",
+  "content": ["確認"],
   "action": "submit"
 }
 
@@ -98,43 +120,44 @@
 
 ---
 
-## 為什麼需要 @Doc？
+## 雙線並行轉譯管道 (Dual-Track Compilation)
 
-傳統 Markdown 的設計初衷是：
-**人類 ➔ HTML**
+基於上述規範 AST，後端渲染器（Renderers）可啟動物理分流轉譯：
 
-@Doc 的設計目標則是：
-**人類 ↔ AI ↔ AST ↔ 渲染器**
+### 🛣️ 路線 A：Tailwind JIT 適配器（高效 Web 端）
 
----
+後端適配器遍歷 `styles` 物件，自動幫動態值「補殼還原」，完美觸發 Tailwind CSS 的 JIT 編譯：
 
-## 目標
+* `static` 保持不變 ➔ `text-lg`
+* `dynamic` 自動還原括號 ➔ `w-120px` 轉譯為 `w-[120px]`；`bg-fff` 偵測為顏色字串自動補井號 ➔ `bg-[#fff]`
+* **最終 HTML 輸出：**
+```html
+<button class="text-lg w-[120px] bg-[#fff] ...">確認</button>
 
-* 保持 Markdown 兼容性
-* 語義化文件結構
-* 確定性解析
-* AI 友善的 Token 化（Tokenization）
-* 無損 AST 轉換
-* 支援增量解析
-* 串流安全渲染
+```
 
----
 
-## 現狀
 
-目前處於早期實驗性設計階段
+### 🛣️ 路線 B：Universal Inline Style 適配器（跨平台/無封裝環境）
 
-重點關注領域：
+當遇到老舊前端、Email 渲染、或原生 Native App 視圖時，動態值直接翻譯成標準的 CSS 行內鍵值對：
 
-* 語法設計
-* AST 規範
-* 解析器架構
-* Token 優化
-* 串流解析
-* AI 原生文件工作流
+* `dynamic` 轉譯 ➔ `width: 120px; background-color: #fff;`
+* **最終 HTML 輸出：**
+```html
+<button class="text-lg" style="width: 120px; background-color: #fff;">確認</button>
+
+```
+
+
 
 ---
+
+## 目標與現狀
+
+* **相容性**：保持對標準 Markdown 基礎結構的雙向無損轉換。
+* **防禦力**：全面凍結 `!@define` 巨集系統的動態編程特性，第一階段僅支援靜態 JSON Schema 映射，防止演變為危險的 Programmable Runtime。
 
 ## 授權
 
-# MIT
+MIT
