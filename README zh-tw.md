@@ -2,7 +2,7 @@
 
 > 專為人類與 AI 重新構思的語義節點式 Markdown。
 
-M@rkdown 是一種 AI 原生的結構化標記語言，旨在實現：
+@Doc 是一種 AI 原生的結構化標記語言，旨在實現：
 
 * **人類可讀性**
 * **確定性解析**（Deterministic parsing）
@@ -98,12 +98,12 @@ M@rkdown 是一種 AI 原生的結構化標記語言，旨在實現：
 
 ---
 
-## 為什麼需要 M@rkdown？
+## 為什麼需要 @Doc？
 
 傳統 Markdown 的設計初衷是：
 **人類 ➔ HTML**
 
-M@rkdown 的設計目標則是：
+@Doc 的設計目標則是：
 **人類 ↔ AI ↔ AST ↔ 渲染器**
 
 ---
