@@ -12,9 +12,9 @@ It's a structured notation designed from the ground up for three audiences: huma
 
 @Doc 做到了 Markdown 做不到的事，同時比 HTML 簡單十倍
 
-Markdown 沒辦法表達 **這個按鈕是 primary variant**
-Markdown 沒辦法定義**表格的視覺樣式**
-HTML 可以做到，但要**寫一堆標籤和 class**
+- Markdown 沒辦法表達 **這個按鈕是 primary variant**
+- Markdown 沒辦法定義**表格的視覺樣式**
+- HTML 可以做到，但要**寫一堆標籤和 class**
 
 ---
 
